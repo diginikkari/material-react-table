@@ -73,11 +73,11 @@ const data = [...Array(120)].map(() => ({
   address: faker.location.streetAddress(),
   age: faker.number.int(100),
   arrivalTime: faker.date.recent(),
-  birthDate: faker.date.birthdate({ max: 2020, min: 1980 }),
+  birthDate: faker.date.birthdate({ max: 2020, min: 1980, mode: 'age' }),
   departureTime: faker.date.recent(),
   firstName: faker.person.firstName(),
   gender: Math.random() < 0.8 ? faker.person.sex() : faker.person.gender(),
-  hireDate: faker.date.birthdate({ max: 2024, min: 2011 }),
+  hireDate: faker.date.birthdate({ max: 2024, min: 2011, mode: 'age' }),
   isActive: faker.datatype.boolean(),
   lastName: faker.person.lastName(),
   state: faker.location.state(),
@@ -240,6 +240,11 @@ export const FilterFnAndFilterVariantsFaceted = () => (
       {
         accessorKey: 'state',
         filterVariant: 'multi-select',
+        filterSelectOptions: (keys) =>
+          keys.map((value) => ({
+            label: value.toUpperCase(),
+            value,
+          })),
         header: 'State',
       },
     ]}

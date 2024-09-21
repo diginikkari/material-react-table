@@ -190,20 +190,32 @@ export const useDropdownOptions = <TData extends MRT_RowData>({
     isSelectFilter,
   } = getColumnFilterInfo({ header, table });
 
-  return useMemo<DropdownOption[] | undefined>(
-    () =>
-      columnDef.filterSelectOptions ??
-      ((isSelectFilter || isMultiSelectFilter || isAutocompleteFilter) &&
+  return useMemo<DropdownOption[] | undefined>(() => {
+    if (columnDef.filterSelectOptions) {
+      // If it's a function, call it with facetedUniqueValues.keys()
+      if (typeof columnDef.filterSelectOptions === 'function') {
+        // Ensure facetedUniqueValues is defined before calling keys()
+        return facetedUniqueValues
+          ? columnDef.filterSelectOptions(
+              Array.from(facetedUniqueValues.keys()),
+            )
+          : undefined;
+      }
+
+      // If it's an array of DropdownOption, return it directly
+      return columnDef.filterSelectOptions;
+    }
+
+    return (isSelectFilter || isMultiSelectFilter || isAutocompleteFilter) &&
       facetedUniqueValues
-        ? Array.from(facetedUniqueValues.keys())
-            .filter((value) => value !== null && value !== undefined)
-            .sort((a, b) => a.localeCompare(b))
-        : undefined),
-    [
-      columnDef.filterSelectOptions,
-      facetedUniqueValues,
-      isMultiSelectFilter,
-      isSelectFilter,
-    ],
-  );
+      ? Array.from(facetedUniqueValues.keys())
+          .filter((value) => value !== null && value !== undefined)
+          .sort((a, b) => a.localeCompare(b))
+      : undefined;
+  }, [
+    columnDef.filterSelectOptions,
+    facetedUniqueValues,
+    isMultiSelectFilter,
+    isSelectFilter,
+  ]);
 };

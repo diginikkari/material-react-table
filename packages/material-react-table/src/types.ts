@@ -492,7 +492,9 @@ export interface MRT_ColumnDef<TData extends MRT_RowData, TValue = unknown>
     table: MRT_TableInstance<TData>;
   }) => ReactNode;
   filterFn?: MRT_FilterFn<TData>;
-  filterSelectOptions?: DropdownOption[];
+  filterSelectOptions?:
+    | DropdownOption[]
+    | ((keys: string[]) => DropdownOption[]);
   filterVariant?:
     | 'autocomplete'
     | 'checkbox'
